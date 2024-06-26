@@ -1,19 +1,21 @@
-<!-- templates/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Send Message</title>
+    <title>Отправка сообщения</title>
 </head>
 <body>
-    <h1>Send a Message</h1>
+    <h1>Отправить сообщение</h1>
     <form method="POST">
-        {{ form.hidden_tag() }}
-        {{ form.message.label }}
-        {{ form.message(size=32) }}
-        {{ form.send() }}
+        {{ message_form.hidden_tag() }}
+        <div class="form-group">
+            {{ message_form.message.label }}
+            {{ message_form.message(size=32) }}
+            {{ thread_form.thread(class="form-control", id="thread_id") }} <!-- Добавляем ID для доступа через JavaScript -->
+            {{ message_form.send(class="btn btn-primary") }}
+        </div>
     </form>
+
     {% with messages = get_flashed_messages() %}
         {% if messages %}
             <ul>
@@ -23,5 +25,18 @@
             </ul>
         {% endif %}
     {% endwith %}
+
+    <script>
+        // JavaScript для передачи значения thread_id при отправке формы
+        document.querySelector('form').addEventListener('submit', function() {
+            var threadIdField = document.getElementById('thread_id');
+            var selectedThreadId = threadIdField.value;
+            var hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'thread_id';
+            hiddenInput.value = selectedThreadId;
+            this.appendChild(hiddenInput);
+        });
+    </script>
 </body>
 </html>
